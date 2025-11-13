@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block profileactive %}active{% endblock %}
+
+{% block css %}
+/* Card polish */
+.profile-card {
+   border: 0; border-radius: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,.06);
+  }
+
+.profile-avatar {
+   width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 6px 18px rgba(0,0,0,.12); 
+}
+.stat {
+  text-align:center; 
+}
+.stat h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+   margin-bottom: .25rem; font-weight: 700;
+}
+.stat span {
+  font-size: 0.85rem;
+  color: #6c757d;
+   font-size: .9rem; color: #6c757d; 
+}
+.kv label { 
+  color:#6c757d; margin-bottom: .25rem; 
+}
+.kv p { 
+  margin: 0 0 1rem 0; font-weight: 500; 
+}
+.section-title {
+   font-weight:700; font-size:1.05rem; letter-spacing:.3px; color:#6c757d; text-transform:uppercase; 
+}
+.post-row:hover {
+   background: #f8f9fa; border-radius:.5rem; 
+}
+.badge-soft {
+   background: #eef2ff; color:#3b82f6; 
+  }
+.btn-round { 
+  border-radius: 999px; 
+}
+@media (max-width: 991px){
+  .profile-avatar { width: 120px; height: 120px; }
+}
+
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+  <div class="row g-4">
+
+    <!-- Left: Avatar + Actions + Stats -->
+    <div class="col-lg-4">
+      <div class="card profile-card p-4">
+        <div class="d-flex flex-column align-items-center">
+          {% if profile.image %}
+            <img class="profile-avatar" src="{{ profile.image.url }}" alt="{{ user.username }} avatar">
+          {% else %}
+            <img class="profile-avatar" src="{% static 'img/49816613.jpg' %}" alt="default avatar">
+          {% endif %}
+
+          <h4 class="mt-3 mb-0">{{ user.get_full_name|default:user.username }}</h4>
+          <div class="text-muted">@{{ user.username }}</div>
+
+          <div class="d-flex gap-2 mt-3">
+            <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline-secondary btn-round">Edit Profile</a>
+            <a href="{% url 'add_blogs' %}" class="btn btn-sm btn-primary btn-round">Write a Post</a>
+          </div>
+
+          <div class="row mt-4 w-100">
+            <div class="col-4 stat">
+              <h3>{{ posts_count }}</h3>
+              <span>Posts</span>
+            </div>
+            <div class="col-4 stat">
+              <h3>{{ comments_count }}</h3>
+              <span>Comments</span>
+            </div>
+            <div class="col-4 stat">
+              <h3>{{ member_since|date:"M Y" }}</h3>
+              <span>Member</span>
+            </div>
+          </div>
+
+          {% if profile.instagram or profile.linkedin or profile.facebook %}
+          <div class="mt-4 d-flex gap-2">
+            {% if profile.linkedin %}
+              <a class="btn btn-sm btn-outline-primary btn-round" target="_blank" rel="noopener" href="{{ profile.linkedin }}">LinkedIn</a>
+            {% endif %}
+            {% if profile.instagram %}
+              <a class="btn btn-sm btn-outline-danger btn-round" target="_blank" rel="noopener" href="{{ profile.instagram }}">Instagram</a>
+            {% endif %}
+            {% if profile.facebook %}
+              <a class="btn btn-sm btn-outline-primary btn-round" target="_blank" rel="noopener" href="{{ profile.facebook }}">Facebook</a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: About + Recent Posts -->
+    <div class="col-lg-8">
+      <div class="card profile-card p-4 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="section-title">About</div>
+          <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-outline-secondary btn-round">Edit</a>
+        </div>
+        <hr>
+        <div class="row kv">
+          <div class="col-md-6">
+            <label>Full Name</label>
+            <p>{{ user.get_full_name|default:"—" }}</p>
+          </div>
+          <div class="col-md-6">
+            <label>Email</label>
+            <p>{{ user.email|default:"—" }}</p>
+          </div>
+          <div class="col-md-6">
+            <label>Phone</label>
+            <p>{{ profile.phone_no|default:"—" }}</p>
+          </div>
+          <div class="col-12">
+            <label>Bio</label>
+            <p class="text-break">{{ profile.bio|default:"Add a short bio so readers know you better." }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card profile-card p-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="section-title">Recent Posts</div>
+          <a href="{% url 'add_blogs' %}" class="btn btn-sm btn-primary btn-round">New Post</a>
+        </div>
+        <hr>
+        {% if latest_posts %}
+          <div class="list-group list-group-flush">
+            {% for p in latest_posts %}
+              <div class="list-group-item post-row border-0 px-0">
+                <div class="d-flex justify-content-between align-items-start flex-wrap">
+                  <div class="me-3">
+                    <a class="fw-semibold text-decoration-none" href="{% url 'blogs_comments' p.slug %}">{{ p.title }}</a>
+                    <div class="small text-muted">Published {{ p.dateTime|date:"M d, Y - H:i" }}</div>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'edit_blog_post' p.slug %}">Edit</a>
+                    <a class="btn btn-sm btn-outline-danger"
+                       href="{% url 'delete_blog_post' p.slug %}">Delete</a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-muted">You haven’t published any posts yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="text-end mt-3">
+    <a class="btn btn-sm btn-outline-dark btn-round" href="{% url 'logout' %}">Logout</a>
+  </div>
+</div>
+{% endblock %}

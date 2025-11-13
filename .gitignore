@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+
+# Django specific
+db.sqlite3
+/staticfiles/
+/media/
+/local_settings.py
+
+# Environments
+.env
+.venv/
+env/
+venv/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node (if you have frontend)
+node_modules/

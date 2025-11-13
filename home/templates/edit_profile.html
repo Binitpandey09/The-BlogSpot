@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block css %}
+.profile-avatar-lg {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+}
+form label {
+  font-size: 0.95rem;
+  color: #444;
+}
+form input, form textarea {
+  margin-bottom: 10px;
+}
+.btn-round {
+  border-radius: 50px;
+  padding: 10px;
+  font-weight: 500;
+}
+
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+
+      <div class="card p-4 shadow-sm">
+        <h4 class="mb-3 text-center">Edit Profile</h4>
+        <div class="text-center mb-3">
+          {% if profile.image %}
+            <img id="avatarPreview" src="{{ profile.image.url }}" class="profile-avatar-lg" />
+          {% else %}
+            <img id="avatarPreview" src="{% static 'img/49816613.jpg' %}" class="profile-avatar-lg" />
+          {% endif %}
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          {% if form.errors %}
+<div class="alert alert-danger">
+  {{ form.errors }}
+</div>
+{% endif %}
+          <!-- Name -->
+          <label class="form-label fw-semibold">First Name</label>
+          <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control">
+          <label class="form-label fw-semibold mt-2">Last Name</label>
+          <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
+
+
+          <!-- Image Upload -->
+          <label class="form-label fw-semibold mt-3">Profile Photo</label>
+          <input type="file" name="image" accept="image/*" class="form-control mb-4" onchange="previewImage(event)">
+
+          <!-- Phone -->
+          <label class="form-label fw-semibold">Phone Number</label>
+          {{ form.phone_no }}
+
+          <!-- Bio -->
+          <label class="form-label fw-semibold mt-3">Bio</label>
+          {{ form.bio }}
+
+          <!-- Social Links Title -->
+          <h6 class="mt-4 mb-2 fw-bold text-secondary">Social Links</h6>
+
+          <label class="form-label">Facebook</label>
+          {{ form.facebook }}
+
+          <label class="form-label mt-2">Instagram</label>
+          {{ form.instagram }}
+
+          <label class="form-label mt-2">LinkedIn</label>
+          {{ form.linkedin }}
+
+          <button type="submit" class="btn btn-primary w-100 mt-4 btn-round">Save Changes</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function previewImage(event) {
+  var output = document.getElementById('avatarPreview');
+  output.src = URL.createObjectURL(event.target.files[0]);
+}
+</script>
+
+{% endblock %}
