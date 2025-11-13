@@ -1,0 +1,77 @@
+/* 1. The main grid container */
+.layout-container {
+    display: grid;
+    /* Sidebar open (260px) and Main Content (1fr) */
+    grid-template-columns: 260px 1fr;
+    transition: grid-template-columns 0.3s ease-in-out;
+}
+
+/* 2. The new sidebar container */
+.sidebar-container {
+    /* This makes the sidebar sticky under the top navbar */
+    position: sticky;
+    top: 57px; /* Adjust this to your navbar's exact height! */
+    height: calc(100vh - 57px); /* Full height minus the navbar */
+
+    overflow-y: auto; /* Allows sidebar to scroll if items overflow */
+    padding: 1rem;
+    background: #fff; /* White background */
+    border-right: 1px solid #dee2e6; /* Faint border */
+
+    /* Prevents text wrapping/hiding during animation */
+    white-space: nowrap;
+    overflow-x: hidden;
+    
+    /* Added for smooth hiding */
+    transition: padding 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+/* 3. The main content area */
+.main-content {
+    padding: 1.5rem;
+}
+
+/* 4. --- COLLAPSED STATE (CHANGED) --- */
+.layout-container.sidebar-collapsed {
+    /* Sidebar collapsed (0px) and Main Content (1fr) */
+    grid-template-columns: 0px 1fr;
+}
+
+/* 5. --- Menu Item Styling --- */
+.sidebar-container .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    color: #212529;
+    text-decoration: none;
+}
+.sidebar-container .menu-item:hover {
+    background: #f5f5f5;
+}
+.sidebar-container .menu-icon {
+    font-size: 18px;
+}
+
+/* 6. --- HOW COLLAPSED ITEMS LOOK (CHANGED) --- */
+.layout-container.sidebar-collapsed .sidebar-container {
+    /* This hides everything in the sidebar when collapsed */
+    visibility: hidden;
+    padding: 0;
+    border-right: none; /* Hide the border too */
+}
+
+/* This rule was leftover from the old style and is NOT needed */
+/*
+.layout-container.sidebar-collapsed .menu-text {
+    display: none;
+}
+.layout-container.sidebar-collapsed .menu-item {
+    justify-content: center;
+}
+.layout-container.sidebar-collapsed .menu-icon {
+    font-size: 22px;
+}
+*/
